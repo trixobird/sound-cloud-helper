@@ -10,9 +10,11 @@
     "update": "pnpm update --latest && pnpm i && turbo update --concurrency=1 && pnpm install",
     "format": "prettier --write \"**/*.{ts,tsx,cjs,mjs,js}\"",
     "prettier": "prettier --check \"**/*.{ts,tsx,md,cjs,mjs,js}\"",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",
