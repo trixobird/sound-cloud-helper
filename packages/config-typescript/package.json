@@ -1,9 +1,16 @@
 {
   "name": "@repo/typescript-config",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "clean": "rm -rf node_modules",
+    "update": "pnpm update --latest"
+  },
+  "devDependencies": {
+    "@repo/lintstaged-config": "workspace:*"
   }
 }

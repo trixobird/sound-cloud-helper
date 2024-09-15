@@ -1,0 +1,8 @@
+{
+  "name": "@repo/lintstaged-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Lint staged config",
+  "main": "./index.mjs"
+}

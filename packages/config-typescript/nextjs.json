@@ -5,6 +5,7 @@
   "compilerOptions": {
     "plugins": [{ "name": "next" }],
     "allowJs": true,
+    "incremental": true,
     "lib": ["dom", "dom.iterable", "ESNext"]
   },
   "include": ["src", "next-env.d.ts"],

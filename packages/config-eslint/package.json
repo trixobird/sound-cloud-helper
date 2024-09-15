@@ -8,6 +8,7 @@
     "update": "pnpm update --latest"
   },
   "devDependencies": {
+    "@repo/lintstaged-config": "workspace:*",
     "@vercel/style-guide": "^6.0.0",
     "eslint-config-turbo": "^2.1.2"
   }

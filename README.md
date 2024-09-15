@@ -13,7 +13,7 @@ Increase your followers in sound cloud.
 
 1. Clone the repo
 2. Create a db named `sound_cloud_helper` in postgres
-3. Create a .env file in the `packages/database` directory with the following content:
+3. Create a .env file in the `packages/database`, `packages/backoffice`, `packages/web` directory with the following content:
    ```env
    DATABASE_URL=postgresql://postgres@localhost:5432/sound_cloud_helper
    ```
