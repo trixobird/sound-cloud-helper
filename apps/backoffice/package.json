@@ -1,34 +1,33 @@
 {
-  "name": "@repo/ui",
+  "name": "backoffice",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "sideEffects": [
-    "**/*.css"
-  ],
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    "./styles.css": "./dist/index.css",
-    "./card": "./src/card.tsx"
-  },
   "scripts": {
-    "build": "tailwindcss -i ./src/styles.css -o ./dist/index.css",
-    "lint": "eslint src/",
-    "dev": "tailwindcss -i ./src/styles.css -o ./dist/index.css --watch",
+    "dev": "next dev --port 3001",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf .next node_modules .turbo",
     "update": "pnpm update --latest"
   },
-  "peerDependencies": {
-    "react": "^18.2.0"
+  "dependencies": {
+    "@repo/database": "workspace:*",
+    "@repo/logger": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "next": "^14.2.11",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^14.2.11",
     "@repo/eslint-config": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.5.5",
     "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.11",

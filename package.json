@@ -1,21 +1,26 @@
 {
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "type-check": "turbo type-check",
     "clean": "turbo clean",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "update": "pnpm update --latest && pnpm i && turbo update --concurrency=1 && pnpm install",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prettier": "prettier --check \"**/*.{ts,tsx,md}\"",
+    "lint-staged": "lint-staged"
   },
   "devDependencies": {
-    "prettier": "^3.2.5",
-    "prettier-plugin-tailwindcss": "^0.5.11",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.6",
     "turbo": "^2.1.2"
   },
-  "packageManager": "pnpm@8.15.6",
+  "packageManager": "pnpm@9.10.0",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "name": "with-tailwind"
 }
