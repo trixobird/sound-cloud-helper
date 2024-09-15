@@ -4,9 +4,7 @@ import { type LogData, pinoLambdaDestination, PinoLogFormatter } from 'pino-lamb
 const optionsOrStream: LoggerOptions = {
   base: undefined,
   transport: {
-    targets: [
-      { target: process.env.MODE ? 'pino/file' : 'pino-pretty', options: { destination: 1 } },
-    ],
+    targets: [{ target: process.env.MODE ? 'pino/file' : 'pino-pretty', options: { destination: 1 } }],
   },
 };
 

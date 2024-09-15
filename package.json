@@ -8,8 +8,8 @@
     "type-check": "turbo type-check",
     "clean": "turbo clean",
     "update": "pnpm update --latest && pnpm i && turbo update --concurrency=1 && pnpm install",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prettier": "prettier --check \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,cjs,mjs,js}\"",
+    "prettier": "prettier --check \"**/*.{ts,tsx,md,cjs,mjs,js}\"",
     "lint-staged": "lint-staged"
   },
   "devDependencies": {
