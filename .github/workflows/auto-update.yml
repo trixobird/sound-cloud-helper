@@ -28,6 +28,11 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
+      - name: Install dependencies
+        run: |
+          pnpm install
+          pnpm --filter=database generate
+
       - name: Update packages
         run: pnpm run update
 
