@@ -5,7 +5,7 @@ const schema = z.object({
   DATABASE_URL: z
     .string()
     .regex(/^"?postgres(?:ql|):\/\/.*:?.*?@.*(?::.*)?\/.*/)
-    .default('postgresql://postgres@localhost:5432/adsviewer'),
+    .default('postgresql://postgres@localhost:5432/sound_cloud_helper'),
   DATABASE_RO_URL: z
     .string()
     .regex(/^"?postgres(?:ql|):\/\/.*:?.*?@.*(?::.*)?\/.*/)

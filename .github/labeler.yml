@@ -1,0 +1,25 @@
+automation:
+- changed-files:
+  - any-glob-to-any-file: .github/**/*
+
+documentation:
+- changed-files:
+  - any-glob-to-any-file: '*.md'
+
+infrastructure:
+- changed-files:
+  - any-glob-to-any-file: infrastructure/**/*
+
+web:
+- changed-files:
+  - any-glob-to-any-file: apps/web/**/*
+
+backoffice:
+  - changed-files:
+      - any-glob-to-any-file: apps/backoffice/**/*
+
+feature:
+  - head-branch: ['^env', 'env']
+
+release:
+  - base-branch: 'main'
