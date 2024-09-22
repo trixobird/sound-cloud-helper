@@ -7,7 +7,7 @@ on:
         required: true
         type: string
     secrets:
-      sentry_auth_token:
+      database_url:
         required: true
       turbo_token:
         required: true
@@ -22,7 +22,7 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.vercel_project_id }}
   TURBO_TOKEN: ${{ secrets.turbo_token }}
   TURBO_TEAM: ${{ inputs.turbo_team }}
-  SENTRY_AUTH_TOKEN: ${{ secrets.sentry_auth_token }}
+  DATABASE_URL: ${{ secrets.database_url }}
 
 jobs:
   deploy:
