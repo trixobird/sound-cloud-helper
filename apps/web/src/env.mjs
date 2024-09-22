@@ -11,9 +11,7 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(['development', 'test', 'production']),
-    DATABASE_URL: z
-      .string()
-      .regex(/^"?postgres(?:ql|):\/\/.*:?.*?@.*(?::.*)?\/.*/),
+    DATABASE_URL: z.string().regex(/^"?postgres(?:ql|):\/\/.*:?.*?@.*(?::.*)?\/.*/),
   },
 
   /**
@@ -40,4 +38,3 @@ export const env = createEnv({
    */
   skipValidation: Boolean(process.env.SKIP_ENV_VALIDATION),
 });
-
