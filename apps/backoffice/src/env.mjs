@@ -10,7 +10,7 @@ export const env = createEnv({
    *  - env | grep -e EXAMPLE_1 -e EXAMPLE_2 >> apps/web/.env.production
    */
   server: {
-    NODE_ENV: z.enum(['local', 'test', 'prod']),
+    NODE_ENV: z.enum(['development', 'test', 'production']),
   },
 
   /**

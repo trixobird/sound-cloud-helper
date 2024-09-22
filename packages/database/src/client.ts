@@ -12,7 +12,7 @@ const connectionString = env.DATABASE_URL;
 
 const pool = new Pool({ connectionString });
 const adapter = new PrismaNeon(pool);
-export const prisma = new PrismaClient(NODE_ENV !== Environment.Local ? { adapter } : undefined).$extends(
+export const prisma = new PrismaClient(NODE_ENV !== Environment.Development ? { adapter } : undefined).$extends(
   readReplicas({
     url: env.DATABASE_RO_URL ?? env.DATABASE_URL,
   }),

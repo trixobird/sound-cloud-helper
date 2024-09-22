@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "build": "turbo build",
-    "dev": "cross-env NODE_ENV=local turbo dev",
+    "dev": "cross-env NODE_ENV=development turbo dev",
     "lint": "turbo lint",
     "type-check": "turbo type-check",
     "clean": "turbo clean",
