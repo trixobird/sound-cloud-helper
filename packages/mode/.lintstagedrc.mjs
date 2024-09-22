@@ -1,3 +1,3 @@
-import {nodeLintStagedConfig} from "@repo/lintstaged-config/index.mjs";
+import { nodeLintStagedConfig } from '@repo/lintstaged-config/index.mjs';
 
 export default nodeLintStagedConfig;

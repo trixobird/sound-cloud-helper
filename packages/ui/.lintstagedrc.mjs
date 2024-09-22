@@ -1,3 +1,3 @@
-import {reactLintStagedConfig} from "@repo/lintstaged-config/index.mjs";
+import { reactLintStagedConfig } from '@repo/lintstaged-config/index.mjs';
 
 export default reactLintStagedConfig;

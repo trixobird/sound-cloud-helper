@@ -5,6 +5,7 @@
     "**/.env"
   ],
   "globalEnv": [
+    "DATABASE_URL",
     "NODE_ENV",
     "SKIP_ENV_VALIDATION"
   ],
