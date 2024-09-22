@@ -3,25 +3,26 @@ name: Vercel Deployments Function
 on:
   workflow_call:
     inputs:
-      vercel_org_id:
+      turbo_team:
         required: true
         type: string
     secrets:
-      sentry_auth_token:
+      database_url:
         required: true
       turbo_token:
         required: true
       vercel_project_id:
         required: true
-      vercel_token:
+      vercel_org_id:
         required: true
 
+
 env:
-  VERCEL_ORG_ID: ${{ inputs.vercel_org_id }}
+  VERCEL_ORG_ID: ${{ secrets.vercel_org_id }}
   VERCEL_PROJECT_ID: ${{ secrets.vercel_project_id }}
   TURBO_TOKEN: ${{ secrets.turbo_token }}
-  TURBO_TEAM: ${{ inputs.vercel_org_id }}
-  SENTRY_AUTH_TOKEN: ${{ secrets.sentry_auth_token }}
+  TURBO_TEAM: ${{ inputs.turbo_team }}
+  DATABASE_URL: ${{ secrets.database_url }}
 
 jobs:
   deploy:
@@ -37,12 +38,12 @@ jobs:
       - name: Install Vercel CLI
         run: pnpm install --global vercel@latest
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.vercel_token }}
+        run: vercel pull --yes --environment=${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} --token=${{ secrets.turbo_token }}
       - name: Install dependencies
         run: |
           pnpm install
           pnpm --filter=database generate
       - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --prod --token=${{ secrets.turbo_token }}
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.turbo_token }}
