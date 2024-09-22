@@ -51,6 +51,7 @@ jobs:
         run: |
           pnpm install
           pnpm --filter=database generate
+          pnpm --filter=ui build
 
       - name: Lint
         run: pnpm lint
