@@ -2,17 +2,18 @@ name: Vercel Deployments
 
 on:
   workflow_dispatch:
-#  push:
-#    branches:
-#      - main
-#    paths:
-#      - apps/web/**
-#      - apps/backoffice/**
-#      - packages/logger/**
-#      - packages/mode/**
-#      - packages/ui/**
-#      - packages/utils/**
-#      - .github/workflows/**
+  push:
+    branches:
+      - main
+      - deploy-vercel
+    paths:
+      - apps/web/**
+      - apps/backoffice/**
+      - packages/logger/**
+      - packages/mode/**
+      - packages/ui/**
+      - packages/utils/**
+      - .github/workflows/**
 
 jobs:
   deploy:
@@ -25,6 +26,5 @@ jobs:
       sentry_auth_token: ${{ secrets.SENTRY_AUTH_TOKEN }}
       turbo_token: ${{ secrets.TURBO_TOKEN }}
       vercel_project_id: ${{ secrets[matrix.app_project_id] }}
-      vercel_token: ${{ secrets.VERCEL_TOKEN }}
     with:
       vercel_org_id: ${{ vars.TURBO_TEAM }}
