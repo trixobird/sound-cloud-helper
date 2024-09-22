@@ -3,7 +3,7 @@ name: Vercel Deployments Function
 on:
   workflow_call:
     inputs:
-      vercel_org_id:
+      turbo_team:
         required: true
         type: string
     secrets:
@@ -13,13 +13,15 @@ on:
         required: true
       vercel_project_id:
         required: true
+      vercel_org_id:
+        required: true
 
 
 env:
-  VERCEL_ORG_ID: ${{ inputs.vercel_org_id }}
+  VERCEL_ORG_ID: ${{ secrets.vercel_org_id }}
   VERCEL_PROJECT_ID: ${{ secrets.vercel_project_id }}
   TURBO_TOKEN: ${{ secrets.turbo_token }}
-  TURBO_TEAM: ${{ inputs.vercel_org_id }}
+  TURBO_TEAM: ${{ inputs.turbo_team }}
   SENTRY_AUTH_TOKEN: ${{ secrets.sentry_auth_token }}
 
 jobs:

@@ -26,5 +26,6 @@ jobs:
       sentry_auth_token: ${{ secrets.SENTRY_AUTH_TOKEN }}
       turbo_token: ${{ secrets.TURBO_TOKEN }}
       vercel_project_id: ${{ secrets[matrix.app_project_id] }}
+      vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}
     with:
-      vercel_org_id: ${{ vars.TURBO_TEAM }}
+      turbo_team: ${{ vars.turbo_team }}
