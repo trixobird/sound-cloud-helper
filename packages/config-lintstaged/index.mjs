@@ -16,5 +16,5 @@ export const terraformStagedConfig = {
 };
 
 export const prismaStagedConfig = {
-  '*.prisma': 'prisma format --schema packages/database/prisma/schema.prisma',
+  '*.prisma': 'prisma format --schema ./prisma/schema.prisma',
 };
