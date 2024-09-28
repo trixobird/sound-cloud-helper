@@ -7,7 +7,13 @@ on:
         required: true
         type: string
     secrets:
-      database_url:
+      neon_api_key:
+        required: true
+      neon_database_name:
+        required: true
+      neon_database_username:
+        required: true
+      neon_project_id:
         required: true
       turbo_token:
         required: true
@@ -16,13 +22,15 @@ on:
       vercel_org_id:
         required: true
 
-
 env:
   VERCEL_ORG_ID: ${{ secrets.vercel_org_id }}
   VERCEL_PROJECT_ID: ${{ secrets.vercel_project_id }}
   TURBO_TOKEN: ${{ secrets.turbo_token }}
   TURBO_TEAM: ${{ inputs.turbo_team }}
-  DATABASE_URL: ${{ secrets.database_url }}
+  NEON_DATABASE_USERNAME: ${{ secrets.neon_database_username }}
+  NEON_DATABASE_NAME: ${{ secrets.neon_database_name }}
+  NEON_API_KEY: ${{ secrets.neon_api_key }}
+  NEON_PROJECT_ID: ${{ secrets.neon_project_id }}
 
 jobs:
   deploy:
@@ -35,15 +43,45 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
+
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v8
+
+      - name: Create Neon Branch
+        if: github.event_name == 'pull_request'
+        id: create-branch
+        uses: neondatabase/create-branch-action@v5
+        with:
+          project_id: ${{ env.NEON_PROJECT_ID }}
+          # parent: dev # optional (defaults to your primary branch)
+          branch_name: preview/pr-${{ github.event.number }}-${{ steps.branch-name.outputs.current_branch }}
+          username: ${{ env.NEON_DATABASE_USERNAME }}
+          database: ${{ env.NEON_DATABASE_NAME }}
+          api_key: ${{ env.NEON_API_KEY }}
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run Migrations
+        id: migrations
+        run: |
+          touch .env
+
+          echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }} >> packages/database/.env
+
+          pnpm --filter=database generate
+          pnpm --filter=database db:migrate:deploy
+
       - name: Install Vercel CLI
         run: pnpm install --global vercel@latest
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} --token=${{ secrets.turbo_token }}
-      - name: Install dependencies
-        run: |
-          pnpm install
-          pnpm --filter=database generate
       - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.turbo_token }}
+        env:
+          DATABASE_URL: ${{ steps.create-branch.outputs.db_url_with_pooler }}
+        run: vercel build ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.turbo_token }}
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.turbo_token }}
+        run: vercel deploy --prebuilt ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.turbo_token }}
