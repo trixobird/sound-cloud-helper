@@ -6,6 +6,9 @@ on:
       turbo_team:
         required: true
         type: string
+      environment:
+        required: true
+        type: string
     secrets:
       neon_api_key:
         required: true
@@ -34,6 +37,7 @@ env:
 
 jobs:
   deploy:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -49,7 +53,7 @@ jobs:
         uses: tj-actions/branch-names@v8
 
       - name: Create Neon Branch
-        if: github.event_name == 'pull_request'
+        if: ${{ (github.event_name == 'pull_request') && ( inputs.environment == 'app') }}
         id: create-branch
         uses: neondatabase/create-branch-action@v5
         with:
@@ -67,6 +71,7 @@ jobs:
 
       - name: Run Migrations
         id: migrations
+        if: ${{ inputs.environment == 'app' }}
         run: |
           touch .env
 
@@ -84,4 +89,18 @@ jobs:
           DATABASE_URL: ${{ steps.create-branch.outputs.db_url_with_pooler }}
         run: vercel build ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.turbo_token }}
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.turbo_token }}
+        id: deploy
+        run: echo preview_url=$(vercel deploy --prebuilt ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.turbo_token }}) >> $GITHUB_OUTPUT
+
+      - name: Preview URL on Pull Request
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Vercel ${{ inputs.environment }} URL :rocket: : ${{ steps.deploy.outputs.preview_url }}
+
+      - name: Node branch on Pull Request
+        if: ${{ inputs.environment == 'app' }}
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Neon branch :elephant: : https://console.neon.tech/app/projects/${{ env.NEON_PROJECT_ID }}/branches/${{ steps.create-branch.outputs.branch_id }}

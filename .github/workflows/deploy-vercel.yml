@@ -18,6 +18,7 @@ on:
 
 jobs:
   deploy:
+    permissions: write-all
     strategy:
       fail-fast: false
       matrix:
@@ -33,3 +34,4 @@ jobs:
       vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}
     with:
       turbo_team: ${{ vars.turbo_team }}
+      environment: ${{ matrix.app_project_id == 'WEB_VERCEL_PROJECT_ID' && 'app' || 'backoffice' }}
