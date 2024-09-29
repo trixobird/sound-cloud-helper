@@ -10,6 +10,8 @@ on:
         required: true
         type: string
     secrets:
+      database_url:
+        required: true
       neon_api_key:
         required: true
       neon_database_name:
@@ -26,14 +28,15 @@ on:
         required: true
 
 env:
-  VERCEL_ORG_ID: ${{ secrets.vercel_org_id }}
-  VERCEL_PROJECT_ID: ${{ secrets.vercel_project_id }}
-  TURBO_TOKEN: ${{ secrets.turbo_token }}
-  TURBO_TEAM: ${{ inputs.turbo_team }}
+  DATABASE_URL: ${{ secrets.database_url }}
   NEON_DATABASE_USERNAME: ${{ secrets.neon_database_username }}
   NEON_DATABASE_NAME: ${{ secrets.neon_database_name }}
   NEON_API_KEY: ${{ secrets.neon_api_key }}
   NEON_PROJECT_ID: ${{ secrets.neon_project_id }}
+  TURBO_TOKEN: ${{ secrets.turbo_token }}
+  TURBO_TEAM: ${{ inputs.turbo_team }}
+  VERCEL_ORG_ID: ${{ secrets.vercel_org_id }}
+  VERCEL_PROJECT_ID: ${{ secrets.vercel_project_id }}
 
 jobs:
   deploy:
@@ -75,7 +78,7 @@ jobs:
         run: |
           touch .env
 
-          echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }} >> packages/database/.env
+          echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler || env.DATABASE_URL }} >> packages/database/.env
 
           pnpm --filter=database generate
           pnpm --filter=database db:migrate:deploy
@@ -86,20 +89,21 @@ jobs:
         run: vercel pull --yes --environment=${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} --token=${{ secrets.turbo_token }}
       - name: Build Project Artifacts
         env:
-          DATABASE_URL: ${{ steps.create-branch.outputs.db_url_with_pooler }}
+          DATABASE_URL: ${{ steps.create-branch.outputs.db_url_with_pooler || env.DATABASE_URL }}
         run: vercel build ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.turbo_token }}
       - name: Deploy Project Artifacts to Vercel
         id: deploy
         run: echo preview_url=$(vercel deploy --prebuilt ${{ github.ref == 'refs/heads/main' && '--prod' || '' }} --token=${{ secrets.turbo_token }}) >> $GITHUB_OUTPUT
 
       - name: Preview URL on Pull Request
+        if: ${{ github.event_name == 'pull_request' }}
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
             Vercel ${{ inputs.environment }} URL :rocket: : ${{ steps.deploy.outputs.preview_url }}
 
       - name: Node branch on Pull Request
-        if: ${{ inputs.environment == 'app' }}
+        if: ${{ (github.event_name == 'pull_request') && ( inputs.environment == 'app') }}
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
