@@ -25,11 +25,12 @@ jobs:
         app_project_id: [ WEB_VERCEL_PROJECT_ID, BACKOFFICE_VERCEL_PROJECT_ID ]
     uses: ./.github/workflows/deploy-vercel-fn.yml
     secrets:
-      turbo_token: ${{ secrets.TURBO_TOKEN }}
+      database_url: ${{ secrets.DATABASE_URL }}
       neon_api_key: ${{ secrets.NEON_API_KEY }}
       neon_database_name: ${{ secrets.NEON_DATABASE_NAME }}
       neon_database_username: ${{ secrets.NEON_DATABASE_USERNAME }}
       neon_project_id: ${{ secrets.NEON_PROJECT_ID }}
+      turbo_token: ${{ secrets.TURBO_TOKEN }}
       vercel_project_id: ${{ secrets[matrix.app_project_id] }}
       vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}
     with:
