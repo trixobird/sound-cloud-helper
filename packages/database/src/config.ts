@@ -4,11 +4,11 @@ import { createEnv } from '@repo/utils';
 const schema = z.object({
   DATABASE_URL: z
     .string()
-    .regex(/^"?postgres(?:ql|):\/\/.*:?.*?@.*(?::.*)?\/.*/)
-    .default('postgresql://postgres@localhost:5432/sound_cloud_helper'),
+    .regex(/^"?mysql:\/\/.*:?.*?@.*(?::.*)?\/.*/)
+    .default('mysql://root:roottoor@localhost:3306/sound_cloud_helper'),
   DATABASE_RO_URL: z
     .string()
-    .regex(/^"?postgres(?:ql|):\/\/.*:?.*?@.*(?::.*)?\/.*/)
+    .regex(/^"?mysql:\/\/.*:?.*?@.*(?::.*)?\/.*/)
     .optional(),
 });
 
