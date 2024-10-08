@@ -7,7 +7,7 @@ export default async function Page(): Promise<ReactNode> {
     <main>
       <ul>
         {users.map((user) => (
-          <li key={user.id}>{user.email}</li>
+          <li key={user.id}>{user.id}</li>
         ))}
       </ul>
     </main>

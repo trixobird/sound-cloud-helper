@@ -1,46 +1,599 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+  output   = "../.prisma"
+}
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters", "tracing"]
-  output          = "../.prisma"
+model SchFollowOrder {
+  id              Int     @id @default(autoincrement()) @map("ID")
+  idUser          Int?    @map("ID_USER")
+  auth            String? @map("AUTH") @db.TinyText
+  orderType       String? @map("ORDER_TYPE") @db.TinyText
+  orderStatus     String? @map("ORDER_STARUS") @db.TinyText
+  idUserCrProcess Int?    @map("ID_USER_CR_PROCESS")
+
+  @@map("SCH_Follow_order")
 }
 
-generator json {
-  provider = "prisma-json-types-generator"
+model SchProxy {
+  id              Int    @id @default(autoincrement()) @map("ID")
+  proxyUrl        String @map("Proxy_url") @db.TinyText
+  proxyLoginpass  String @map("Proxy_loginpass") @db.TinyText
+  cookies         String @map("Cookies") @db.Text
+  typeBan         String @map("TypeBan") @db.Text
+  currentPosition String @map("CurrentPosition") @db.TinyText
+  zoneName        String @map("ZONE_NAME") @db.Text
+
+  @@map("SCH_Proxy")
+}
+
+model SchProxyBk {
+  id              Int    @id @default(autoincrement()) @map("ID")
+  proxyUrl        String @map("Proxy_url") @db.TinyText
+  proxyLoginpass  String @map("Proxy_loginpass") @db.TinyText
+  cookies         String @map("Cookies") @db.Text
+  typeBan         String @map("TypeBan") @db.Text
+  currentPosition String @map("CurrentPosition") @db.TinyText
+  zoneName        String @map("ZONE_NAME") @db.Text
+
+  @@map("SCH_Proxy_bk")
+}
+
+model SchPythonOrder {
+  id             Int       @id @default(autoincrement()) @map("ID")
+  idUser         Int?      @map("ID_USER")
+  detailJson     String?   @map("DETAL_JSON") @db.Text
+  status         String?   @map("STATUS") @db.TinyText
+  idProcess      Int?      @map("ID_PROCESS")
+  startTimestamp DateTime? @map("start_timestamp") @db.Timestamp(0)
+
+  @@map("SCH_Python_order")
+}
+
+model SchSetting {
+  id    Int     @id @default(autoincrement()) @map("ID")
+  key   String? @map("key") @db.Text
+  value String? @map("value") @db.Text
+
+  @@map("SCH_Setting")
+}
+
+model V1AccountBan {
+  id          Int       @id @default(autoincrement()) @map("ID")
+  idAccount   Int?      @map("ID_account")
+  timeUnblock DateTime? @map("TimeUnblock") @db.DateTime(0)
+
+  @@map("V1_Account_ban")
+}
+
+model V1FollowOrder {
+  id              Int       @id @default(autoincrement()) @map("ID")
+  idAccount       Int?      @map("ID_account")
+  idUserFollow    Int?      @map("ID_user_follow")
+  status          String?   @map("Status") @db.TinyText
+  responseCode    String?   @map("ResponseCode") @db.TinyText
+  datetimeProcess DateTime? @map("datatime_process") @db.DateTime(0)
+
+  @@map("V1_Follow_order")
+}
+
+model V1Limit {
+  id        Int       @id @default(autoincrement()) @map("id")
+  idAccount Int?      @map("id_account")
+  datetime  DateTime? @map("datetime") @db.DateTime(0)
+  amount    Int?      @map("amount")
+
+  @@map("V1_Limit")
+}
+
+model V1LimitUnFollow {
+  id        Int       @id @default(autoincrement()) @map("ID")
+  idAccount Int?      @map("id_account")
+  datetime  DateTime? @map("datetime") @db.DateTime(0)
+  amount    Int?      @map("amount")
+
+  @@map("V1_Limit_UnFollow")
+}
+
+model V1UnFollowOrder {
+  id              Int       @id @default(autoincrement()) @map("ID")
+  idAccount       Int?      @map("ID_account")
+  idUserUnfollow  Int?      @map("ID_user_unfollow")
+  status          String?   @map("Status") @db.TinyText
+  responseCode    String?   @map("ResponseCode") @db.TinyText
+  datetimeProcess DateTime? @map("datatime_process") @db.DateTime(0)
+
+  @@map("V1_UnFollow_order")
+}
+
+model AccessType {
+  id          Int     @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  name        String  @map("name") @db.VarChar(45)
+  description String? @map("description") @db.VarChar(254)
+
+  @@map("access_type")
+}
+
+model Account {
+  id                  Int                   @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  login               String                @map("login") @db.VarChar(254)
+  accessToken         String?               @map("access_token") @db.VarChar(80)
+  refreshToken        String?               @map("refresh_token") @db.VarChar(80)
+  idSc                Int?                  @map("ID_SC")
+  accessTokenV2       String?               @map("access_token_v2") @db.Text
+  accessTokenV1       String?               @map("access_token_v1") @db.Text
+  refreshTokenV1      String?               @map("refresh_token_v1") @db.Text
+  tokenExpiresAfterV1 DateTime?             @map("token_expires_after_v1") @db.DateTime(0)
+  createdByV1         String?               @map("created_by_v1") @db.Text
+  userId              Int                   @map("user_id")
+  tokenCreatedAt      Int?                  @map("token_created_at")
+  tokenExpiresAfter   Int?                  @map("token_expires_after")
+  purchaseEndtime     Int?                  @map("purchase_endtime")
+  paymentActive       AccountPaymentActive? @default(N) @map("payment_active")
+  requestToken        String?               @map("request_token") @db.VarChar(200)
+  primary             AccountPrimary?       @default(N) @map("primary")
+  linked              AccountLinked?        @default(Y) @map("linked")
+  timestamp           Int?                  @map("timestamp")
+  user                User                  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_id_fk")
+  accountPayment      AccountPayment[]
+  accountSets         AccountSets[]
+  event               Event[]
+  touchedScUser       TouchedScUser[]       @ignore
+  process             Process[]
+
+  @@index([userId], map: "user_id_fk_idx")
+  @@map("account")
+}
+
+model AccountKind {
+  id   Int     @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  name String  @map("name") @db.VarChar(45)
+  desc String? @map("desc") @db.VarChar(254)
+
+  @@map("account_kind")
+}
+
+model AccountPayment {
+  id              Int                         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  accountId       Int                         @map("account_id")
+  paymentActive   AccountPaymentPaymentActive @default(N) @map("payment_active")
+  purchaseEndtime Int?                        @map("purchase_endtime")
+  account         Account                     @relation(fields: [accountId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_payment__account_id")
+
+  @@index([accountId], map: "fk_account_payment__account_id_idx")
+  @@map("account_payment")
+}
+
+model AccountSets {
+  id            Int          @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  accountId     Int          @map("account_id")
+  url           String?      @map("url") @db.VarChar(1024)
+  todo          Int?         @default(10) @map("todo") @db.SmallInt
+  followCnt     Int          @default(10) @map("follow_cnt") @db.SmallInt
+  unfollowCnt   Int          @default(5) @map("unfollow_cnt") @db.SmallInt
+  prosOnly      Boolean?     @default(false) @map("pros_only")
+  whitelistOnly Boolean?     @default(false) @map("whitelist_only")
+  hh            Int?         @default(10) @map("hh") @db.TinyInt
+  mm            Int?         @default(0) @map("mm") @db.TinyInt
+  processKindId Int?         @map("process_kind_id")
+  scheduleOn    Int?         @default(0) @map("schedule_on") @db.TinyInt
+  timestamp     Int?         @map("timestamp")
+  account       Account      @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fkas_account_id")
+  processKind   ProcessKind? @relation(fields: [processKindId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkas_process_kind_id")
+
+  @@index([accountId], map: "fkas_account_id_idx")
+  @@index([processKindId], map: "fkas_process_kind_id_idx")
+  @@map("account_sets")
+}
+
+model Activity {
+  id        Int  @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  accountId Int? @map("account_id")
+  t1        Int  @map("t1")
+  t2        Int? @map("t2")
+
+  @@map("activity")
+}
+
+model CronProcess {
+  processId Int      @map("process_id")
+  locked    Boolean? @default(false) @map("locked")
+  process   Process  @relation(fields: [processId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fkcrp_process_id")
+
+  @@index([processId], map: "fkcrp_process_id_idx")
+  @@map("cron_process")
+  @@ignore
+}
+
+model Event {
+  id          Int       @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  userId      Int?      @map("user_id")
+  accountId   Int?      @map("account_id")
+  title       String?   @map("title") @db.VarChar(254)
+  message     String?   @map("message") @db.MediumText
+  codepoint   String?   @map("codepoint") @db.MediumText
+  eventKindId Int       @map("event_kind_id")
+  timestamp   Int       @map("timestamp")
+  eventKind   EventKind @relation(fields: [eventKindId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_id")
+  account     Account?  @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "zaccount_id")
+  user        User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "zzuser_id")
+
+  @@index([eventKindId], map: "id_event_idx")
+  @@index([accountId], map: "zaccount_id_idx")
+  @@index([userId], map: "zzuser_id_idx")
+  @@map("event")
+}
+
+model EventKind {
+  id          Int                @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  name        String?            @map("name") @db.VarChar(45)
+  title       String             @map("title") @db.VarChar(60)
+  message     String?            @map("message") @db.VarChar(254)
+  eventTypeId Int                @map("event_type_id")
+  toSendMail  Int?               @default(0) @map("to_send_mail")
+  shielded    EventKindShielded? @default(N) @map("shielded")
+  note        String?            @map("note") @db.VarChar(80)
+  onlyAtGo    EventKindOnlyAtGo? @default(N) @map("only_at_go")
+  event       Event[]
+  eventType   EventType          @relation(fields: [eventTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_type_id")
+
+  @@index([eventTypeId], map: "event_type_id_idx")
+  @@map("event_kind")
+}
+
+model EventType {
+  id        Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  name      String?     @map("name") @db.VarChar(45)
+  eventKind EventKind[]
+
+  @@map("event_type")
+}
+
+model Operation {
+  id                                       Int             @id @default(autoincrement()) @map("id")
+  operationKindId                          Int             @map("operation_kind_id")
+  processId                                Int             @map("process_id")
+  operationStatusId                        Int             @map("operation_status_id")
+  vars                                     String?         @map("vars") @db.MediumText
+  lastTryTime                              Int?            @map("last_try_time")
+  failsInRow                               Int?            @default(0) @map("fails_in_row")
+  operationKind                            OperationKind   @relation(fields: [operationKindId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "operation_kind_id")
+  operationStatus                          OperationStatus @relation(fields: [operationStatusId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "operation_status_id")
+  processOperationProcessIdToProcess       Process         @relation("operation_process_idToprocess", fields: [processId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "process_id")
+  processProcessCurOperationIdToOperation  Process[]       @relation("process_cur_operation_idTooperation")
+  processProcessPrevOperationIdToOperation Process[]       @relation("process_prev_operation_idTooperation")
+
+  @@index([operationKindId], map: "operation_kind_id_idx")
+  @@index([operationStatusId], map: "operation_status_id_idx")
+  @@index([processId], map: "process_id_idx")
+  @@map("operation")
+}
+
+model OperationKind {
+  id        Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  name      String?     @map("name") @db.VarChar(45)
+  desc      String?     @map("desc") @db.VarChar(240)
+  operation Operation[]
+
+  @@map("operation_kind")
+}
+
+model OperationStatus {
+  id        Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  name      String?     @map("name") @db.VarChar(45)
+  desc      String?     @map("desc") @db.VarChar(254)
+  operation Operation[]
+
+  @@map("operation_status")
+}
+
+model Process {
+  id                                         Int                @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  processKindId                              Int                @map("process_kind_id")
+  accountId                                  Int                @map("account_id")
+  processStatusId                            Int                @map("process_status_id")
+  timestamp                                  Int?               @map("timestamp")
+  vars                                       String?            @map("vars") @db.MediumText
+  curOperationId                             Int?               @map("cur_operation_id")
+  prevOperationId                            Int?               @map("prev_operation_id")
+  failsInRow                                 Int?               @default(0) @map("fails_in_row")
+  crj                                        Int?               @map("crj") @db.TinyInt
+  createdAt                                  DateTime?          @default(now()) @map("created_at") @db.Timestamp(6)
+  cronProcess                                CronProcess[]      @ignore
+  operationOperationProcessIdToProcess       Operation[]        @relation("operation_process_idToprocess")
+  account                                    Account            @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "account_id")
+  operationProcessCurOperationIdToOperation  Operation?         @relation("process_cur_operation_idTooperation", fields: [curOperationId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "cur_operation_id")
+  processKind                                ProcessKind        @relation(fields: [processKindId], references: [id], onDelete: NoAction, map: "process_kind")
+  processStatus                              ProcessStatus      @relation(fields: [processStatusId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "process_status_id")
+  operationProcessPrevOperationIdToOperation Operation?         @relation("process_prev_operation_idTooperation", fields: [prevOperationId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "zprev_operation_id")
+  scheduledProcess                           ScheduledProcess[]
+
+  @@index([accountId], map: "account_id_idx")
+  @@index([curOperationId], map: "cur_operation_id_idx")
+  @@index([processKindId], map: "process_id_idx")
+  @@index([processStatusId], map: "process_status_id_idx")
+  @@index([prevOperationId], map: "zprev_operation_id_idx")
+  @@map("process")
+}
+
+model ProcessKind {
+  id          Int           @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  name        String?       @map("name") @db.VarChar(45)
+  desc        String?       @map("desc") @db.VarChar(240)
+  accountSets AccountSets[]
+  process     Process[]
+
+  @@map("process_kind")
+}
+
+model ProcessStatus {
+  id      Int       @id @unique(map: "id_UNIQUE") @default(autoincrement()) @map("id")
+  name    String?   @map("name") @db.VarChar(45)
+  desc    String?   @map("desc") @db.VarChar(254)
+  process Process[]
+
+  @@map("process_status")
+}
+
+model RefreshToken {
+  id        Int                @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  token     String?            @db.VarChar(32)
+  userId    Int?               @map("user_id")
+  createdAt Int?               @map("created_at")
+  expiresAt Int?               @map("expires_at")
+  userAgent String?            @map("user_agent") @db.VarChar(255)
+  jwtMark   String?            @map("jwt_mark") @db.VarChar(16)
+  valid     RefreshTokenValid? @default(Y)
+  user      User?              @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "z1user_id")
+
+  @@index([userId], map: "z1user_id_idx")
+  @@map("refresh_token")
+}
+
+model ScheduledProcess {
+  id             Int     @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  processId      Int     @map("process_id")
+  startTimestamp Int     @map("start_timestamp")
+  process        Process @relation(fields: [processId], references: [id], onDelete: Cascade, map: "zprocess_id")
+
+  @@index([processId], map: "process_id_idx")
+  @@map("scheduled_process")
+}
+
+model Stats {
+  accountId  Int  @id @unique(map: "account_id_UNIQUE") @map("account_id")
+  followed   Int? @default(0)
+  unfollowed Int? @default(0)
+  timeSpent  Int? @default(0) @map("time_spent")
+
+  @@map("stats")
+}
+
+model StripePlans {
+  id            Int                 @id @default(autoincrement())
+  name          String              @db.VarChar(255)
+  price         Float               @default(0.00) @db.Float
+  interval      StripePlansInterval @default(month)
+  intervalCount Int                 @default(1) @map("interval_count") @db.TinyInt
+
+  @@map("stripe_plans")
+}
+
+model StripeUserSubscriptions {
+  id                    Int       @id @default(autoincrement())
+  userId                Int       @default(0) @map("user_id")
+  planId                Int?      @map("plan_id")
+  stripeCustomerId      String    @map("stripe_customer_id") @db.VarChar(50)
+  stripePlanPriceId     String?   @map("stripe_plan_price_id") @db.VarChar(255)
+  stripePaymentIntentId String    @map("stripe_payment_intent_id") @db.VarChar(50)
+  stripeSubscriptionId  String    @map("stripe_subscription_id") @db.VarChar(50)
+  defaultPaymentMethod  String?   @map("default_payment_method") @db.VarChar(255)
+  defaultSource         String?   @map("default_source") @db.VarChar(255)
+  paidAmount            Float     @map("paid_amount") @db.Float
+  paidAmountCurrency    String    @map("paid_amount_currency") @db.VarChar(10)
+  planInterval          String    @map("plan_interval") @db.VarChar(10)
+  planIntervalCount     Int       @default(1) @map("plan_interval_count") @db.TinyInt
+  customerName          String?   @map("customer_name") @db.VarChar(50)
+  customerEmail         String?   @map("customer_email") @db.VarChar(50)
+  planPeriodStart       DateTime? @map("plan_period_start") @db.DateTime(0)
+  planPeriodEnd         DateTime? @map("plan_period_end") @db.DateTime(0)
+  created               DateTime  @db.DateTime(0)
+  status                String    @db.VarChar(50)
+
+  @@map("stripe_user_subscriptions")
+}
+
+model StripeUsers {
+  id             Int      @id @default(autoincrement())
+  subscriptionId Int      @default(0) @map("subscription_id")
+  firstName      String   @map("first_name") @db.VarChar(25)
+  lastName       String   @map("last_name") @db.VarChar(25)
+  email          String   @db.VarChar(50)
+  password       String?  @db.VarChar(255)
+  phone          String?  @db.VarChar(15)
+  created        DateTime @default(now()) @db.DateTime(0)
+  modified       DateTime @default(now()) @db.DateTime(0)
+  status         Boolean  @default(true)
+
+  @@map("stripe_users")
+}
+
+model TimeProduct {
+  id    Int     @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name  String? @db.VarChar(45)
+  dt    Int?
+  price Float?  @db.Float
+  code  String? @db.VarChar(45)
+
+  @@map("time_product")
+}
+
+model TimePurchase {
+  id            Int @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  userId        Int @map("user_id")
+  timeProductId Int @map("time_product_id")
+
+  @@index([timeProductId], map: "fk_time_purchase__time_product_id_idx")
+  @@index([userId], map: "user_id_idx")
+  @@map("time_purchase")
+}
+
+model Timezone {
+  id    Int     @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name  String? @unique(map: "name_UNIQUE") @db.VarChar(80)
+  alias String? @db.VarChar(80)
+  user  User[]
+
+  @@map("timezone")
+}
+
+model TouchedScUser {
+  userId     Int      @map("user_id")
+  accountId  Int?     @map("account_id")
+  scUserId   Int      @map("sc_user_id")
+  at         Int?
+  followed   Boolean? @default(true)
+  unfollowed Boolean? @default(false)
+  account    Account? @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "z2_account_id")
+
+  @@index([accountId, at], map: "acc_at_index")
+  @@index([accountId], map: "account_id_idx")
+  @@index([scUserId], map: "idx_sc_user_id")
+  @@index([userId], map: "z_tsu_user_id_idx")
+  @@map("touched_sc_user")
+  @@ignore
 }
 
 model User {
-  id        String     @id @default(cuid())
-  firstName String     @map("first_name")
-  lastName  String     @map("last_name")
-  email     String     @unique @db.Citext
-  password  String?
-  photoUrl  String?    @map("photo_url")
-  roles     UserRole[]
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @default(now()) @updatedAt @map("updated_at")
+  id                Int                @id @default(autoincrement())
+  login             String?            @db.VarChar(45)
+  password          String?            @db.VarChar(60)
+  userRoleId        Int                @map("user_role_id")
+  contactEmail      String?            @map("contact_email") @db.VarChar(254)
+  token             String?            @db.MediumText
+  timeLeft          Int?               @map("time_left")
+  timezoneId        Int?               @map("timezone_id")
+  stamp             String?            @db.VarChar(16)
+  refreshToken      String?            @map("refresh_token") @db.VarChar(16)
+  tokenExpiresAfter Int?               @map("token_expires_after")
+  purchaseEndtime   Int?               @map("purchase_endtime")
+  paymentActive     UserPaymentActive? @default(N) @map("payment_active")
+  requestToken      String?            @unique(map: "request_token_UNIQUE") @map("request_token") @db.VarChar(200)
+  jwtVersion        Int?               @default(0) @map("jwt_version")
+  modpassKey        String?            @map("modpass_key") @db.VarChar(64)
+  modpassExp        Int?               @map("modpass_exp")
+  modpassTodo       UserModpassTodo?   @default(N) @map("modpass_todo")
+  modpassHash       String?            @map("modpass_hash") @db.VarChar(60)
+  useSharedDb       UserUseSharedDb?   @default(N) @map("use_shared_db")
+  lastAccountId     Int?               @map("last_account_id")
+  forgotpassHash    String?            @map("forgotpass_hash") @db.VarChar(60)
+  forgotpassExp     Int?               @map("forgotpass_exp")
+  forgotpassTodo    UserForgotpassTodo @default(N) @map("forgotpass_todo")
+  specificUser      UserSpecificUser   @default(N) @map("specific_user")
+  account           Account[]
+  event             Event[]
+  refreshTokens     RefreshToken[]
+  timezone          Timezone?          @relation(fields: [timezoneId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "timezone_id")
+  userRole          UserRole           @relation(fields: [userRoleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_role_id")
+  userPayment       UserPayment[]
 
-  @@map("users")
+  @@index([timezoneId], map: "timezone_id_idx")
+  @@index([userRoleId], map: "user_role_id_idx")
+  @@map("user")
+}
+
+model UserPayment {
+  id              Int                       @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  userId          Int                       @map("user_id")
+  paymentActive   UserPaymentPaymentActive? @default(N) @map("payment_active")
+  purchaseEndtime Int?                      @map("purchase_endtime")
+  user            User                      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_payment__user_id")
+
+  @@index([userId], map: "fk_user_payment__user_id_idx")
+  @@map("user_payment")
 }
 
 model UserRole {
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  role      RoleEnum
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  id   Int     @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name String? @db.VarChar(45)
+  desc String? @db.VarChar(254)
+  user User[]
 
-  @@id([userId, role])
-  @@map("user_roles")
+  @@map("user_role")
 }
 
-enum RoleEnum {
-  ADMIN
+enum AccountPaymentPaymentActive {
+  Y
+  N
+}
+
+enum UserPaymentPaymentActive {
+  Y
+  N
+}
+
+enum StripePlansInterval {
+  day
+  week
+  month
+  year
+}
+
+enum EventKindShielded {
+  Y
+  N
+}
+
+enum RefreshTokenValid {
+  Y
+  N
+}
+
+enum EventKindOnlyAtGo {
+  Y
+  N
+}
+
+enum UserPaymentActive {
+  Y
+  N
+}
+
+enum AccountPaymentActive {
+  Y
+  N
+}
+
+enum AccountPrimary {
+  Y
+  N
+}
+
+enum AccountLinked {
+  Y
+  N
+}
+
+enum UserModpassTodo {
+  Y
+  N
+}
+
+enum UserUseSharedDb {
+  Y
+  N
+}
+
+enum UserForgotpassTodo {
+  Y
+  N
+}
+
+enum UserSpecificUser {
+  Y
+  N
 }

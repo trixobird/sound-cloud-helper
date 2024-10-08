@@ -3,5 +3,6 @@
 import { prisma, type User } from '@repo/database';
 
 export const getUsers = async (): Promise<User[]> => {
-  return prisma.user.findMany();
+  const user = await prisma.user.findFirstOrThrow();
+  return [user];
 };

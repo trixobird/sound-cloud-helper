@@ -30,8 +30,6 @@
     "update": "pnpm update --latest"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^0.9.5",
-    "@prisma/adapter-neon": "^5.20.0",
     "@prisma/client": "^5.20.0",
     "@prisma/extension-read-replicas": "^0.4.0",
     "@repo/logger": "workspace:*",
@@ -48,7 +46,6 @@
     "@types/ws": "^8.5.12",
     "concurrently": "^9.0.1",
     "prisma": "^5.20.0",
-    "prisma-json-types-generator": "^3.1.1",
     "rimraf": "^6.0.1",
     "tsup": "^8.3.0",
     "tsx": "^4.19.1",
